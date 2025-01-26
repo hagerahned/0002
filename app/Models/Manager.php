@@ -46,4 +46,8 @@ class Manager extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function instructors(){
+        return $this->hasMany(Instructor::class);
+    }
 }

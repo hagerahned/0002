@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('username')->unique();
+            $table->string('rating')->nullable();
             $table->string('phone')->unique();
             $table->string('description');
             $table->timestamp('email_verified_at')->nullable();
@@ -23,6 +24,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreignId('manager_id')->constrained();
+            $table->foreignId('course_id')->nullable()->constrained('courses');
         });
     }
 

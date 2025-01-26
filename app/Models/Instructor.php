@@ -26,6 +26,8 @@ class Instructor extends Authenticatable
         'username',
         'phone',
         'description',
+        'manager_id',
+        'course_id'
     ];
 
     /**
@@ -49,5 +51,12 @@ class Instructor extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function manager(){
+        return $this->belongsTo(Manager::class);
+    }
+    public function course(){
+        return $this->belongsTo(Course::class);
     }
 }

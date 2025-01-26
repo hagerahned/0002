@@ -13,13 +13,14 @@ use App\Models\Instructor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Helpers\Slug;
+use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
 {
 
     public function store(StoreInstructorRequest $request)
     {
-        $username = Slug::make(new Instructor(), $request->name);
+        $username = Slug::makeUser(new Instructor(), $request->name);
         $instructor = Instructor::create([
             'name' => $request->name,
             'username' => $username,
@@ -27,6 +28,7 @@ class InstructorController extends Controller
             'password' =>  bcrypt($request->password),
             'phone' => $request->phone,
             'description' => $request->description,
+            'manager_id' => $request->user()->id,
         ]);
         return ApiResponse::sendResponse('instructor created successfully', new StoreInstructorResource($instructor));
     }
