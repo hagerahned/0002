@@ -12,7 +12,6 @@ use Maatwebsite\Excel\Facades\Excel;
 class StudentController extends Controller
 {
     public function import(Request $request){
-        return $request;
         if($request->hasFile('file')){
             $request->validate([
                 'file' => 'required|file|mimes:xlsx'

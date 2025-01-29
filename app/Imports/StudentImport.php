@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithGroupedHeadingRow;
 
@@ -29,9 +30,9 @@ class StudentImport implements ToModel, WithGroupedHeadingRow
             'department' => $row['department'],
             'specialization' => $row['specialization'],
             'current_year' => $row['current_year'],
-            'expected_graduation_year' => $row['expected_graduation_year'],
+            'expected_graduation_year' => Carbon::parseFromLocale($row['expected_graduation_year']),
             'address' => $row['address'],
-            'birth_date' => $row['birth_date'],
+            'birth_date' => Carbon::parse($row['birth_date']),
         ]);
     }
 }

@@ -27,7 +27,7 @@ class StudentExport implements FromCollection,WithHeadings
             'current_year',
             'expected_graduation_year',
             'address',
-            'birth_date'
+            'birth_date',
         )->get();
     }
 
@@ -48,7 +48,7 @@ class StudentExport implements FromCollection,WithHeadings
             'current_year',
             'expected_graduation_year',
             'address',
-            'birth_date'
+            'birth_date',
         ];
     }
 }

@@ -23,7 +23,7 @@ Route::prefix('manager')->middleware(['auth:sanctum','is_manager'])->controller(
 
     Route::prefix('student')->controller(StudentController::class)->group(function(){
         Route::post('/import','import');
-        Route::get('/export','export');
+        Route::get('/export','export')->withoutMiddleware(['auth:sanctum','is_manager']);
     });
 
     Route::prefix('course')->controller(CourseController::class)->group(function(){
