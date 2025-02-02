@@ -50,4 +50,8 @@ class Manager extends Authenticatable
     public function instructors(){
         return $this->hasMany(Instructor::class);
     }
+
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
 }

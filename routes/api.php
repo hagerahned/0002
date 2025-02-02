@@ -33,6 +33,8 @@ Route::prefix('manager')->middleware(['auth:sanctum','is_manager'])->controller(
         Route::post('/delete','delete');
         Route::post('/restore','restore');
     });
+
+    Route::prefix('post');
 });
 Route::prefix('instructor')->middleware(['auth:sanctum','is_instructor'])->controller(InstructorAuthController::class)->group(function(){
     Route::post('login','login')->withoutMiddleware(['auth:sanctum','is_instructor']);

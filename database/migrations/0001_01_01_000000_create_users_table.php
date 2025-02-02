@@ -30,6 +30,7 @@ return new class extends Migration
             $table->timestamp('expected_graduation_year');
             $table->string('address');
             $table->timestamp('birth_date');
+            $table->enum('is_enrolled',['yes','no'])->default('no');
             $table->rememberToken();
             $table->timestamps();
         });

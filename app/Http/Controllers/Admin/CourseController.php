@@ -13,8 +13,6 @@ use App\Models\Instructor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-use function Pest\Laravel\put;
-
 class CourseController extends Controller
 {
 
@@ -22,6 +20,7 @@ class CourseController extends Controller
     {
         $slug = Slug::makeCourse(new Course, $requset->title);
         $instructor = Instructor::where('email', $requset->instructor_email)->first();
+
         // store course image
         $image = $requset->image;
         $extension = $image->getClientOriginalExtension();
@@ -32,6 +31,7 @@ class CourseController extends Controller
         if (!$instructor) {
             return ApiResponse::sendResponse('Instructor not found', []);
         }
+
         // Create new course
         $course = Course::create([
             'title' => $requset->title,
