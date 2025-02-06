@@ -17,9 +17,12 @@ return new class extends Migration
             $table->longText('description');
             $table->string('image');
             $table->string('slug');
+            $table->string('location');
             $table->string('rating')->nullable();
-            $table->timestamp('start_at');
-            $table->timestamp('end_at');
+            $table->timestamp('apply_start');
+            $table->timestamp('apply_end');
+            $table->timestamp('course_start');
+            $table->timestamp('course_end');
             $table->foreignId('manager_id')->constrained('managers');
             $table->timestamps();
             $table->softDeletes();

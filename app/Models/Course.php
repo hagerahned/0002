@@ -9,7 +9,7 @@ class Course extends Model
 {
     use SoftDeletes;
 
-    protected $fillable=['title','description','image','slug','start_at','end_at','manager_id'];
+    protected $fillable=['title','description','image','slug','course_start','course_end','manager_id','apply_start','apply_end'];
 
     public function manager(){
         return $this->belongsTo(Manager::class);

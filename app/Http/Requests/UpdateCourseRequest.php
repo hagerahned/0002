@@ -25,8 +25,14 @@ class UpdateCourseRequest extends FormRequest
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1000',
             'image' => 'nullable|file|mimes:png,jpeg,jpg|max:2048',
-            'start_at' => 'nullable|date',
-            'end_at' => 'nullable|date|after:start_at',
+            'location' => 'required',
+            
+            'apply_start' => 'nullable|date',
+            'apply_end' => 'nullable|date|after:apply_start',
+
+            'course_start' => 'nullable|date',
+            'course_end' => 'nullable|date|after:course_start',
+
             'course_slug' => 'required|exists:courses,slug',
             'instructor_email' => 'required|exists:instructors,email',
         ];

@@ -24,6 +24,10 @@ class StoreCourseResource extends JsonResource
                 'Name' => $this->instructor->name,
                 'Email' => $this->instructor->email,
             ],
+            "Applyment Period" => [
+                'Start' => Carbon::parse($this->apply_start)->format('F j, Y h:i A'),
+                'End' => Carbon::parse($this->apply_end)->format('F j, Y h:i A'),
+            ],
             "Course Period" => [
                 'Start' => Carbon::parse($this->start_at)->format('F j, Y h:i A'),
                 'End' => Carbon::parse($this->end_at)->format('F j, Y h:i A'),

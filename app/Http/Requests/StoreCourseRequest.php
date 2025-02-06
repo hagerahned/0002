@@ -25,9 +25,15 @@ class StoreCourseRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'image' => 'required|file|mimes:png,jpeg,jpg|max:2048',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
+
+            'course_start' => 'required|date',
+            'course_end' => 'required|date|after:course_start',
+
+            'apply_start' => 'required|date',
+            'apply_end' => 'required|date|after:apply_start',
+            
             'instructor_email' => 'required|exists:instructors,email',
+            'location' => 'required',
         ];
     }
 }
