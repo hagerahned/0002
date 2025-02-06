@@ -41,9 +41,17 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        //
+        $request->validate([
+            'post_slug' => 'required|exists:posts,slug'
+        ]);
+        $input = $request->post_slug;
+        $post = Post::where('slug', $input)->first();
+        if (!$post) {
+            return ApiResponse::sendResponse('Post not found', []);
+        }
+        return ApiResponse::sendResponse('Post found', new StorePostResource($post));
     }
 
     /**

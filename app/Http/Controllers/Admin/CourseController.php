@@ -16,13 +16,13 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
 
-    public function store(StoreCourseRequest $requset)
+    public function store(StoreCourseRequest $request)
     {
-        $slug = Slug::makeCourse(new Course, $requset->title);
-        $instructor = Instructor::where('email', $requset->instructor_email)->first();
+        $slug = Slug::makeCourse(new Course, $request->title);
+        $instructor = Instructor::where('email', $request->instructor_email)->first();
 
         // store course image
-        $image = $requset->image;
+        $image = $request->image;
         $extension = $image->getClientOriginalExtension();
         $path = 'public/images/courses/';
         $imageName = $path . uuid_create() . '.' . $extension;
@@ -31,16 +31,22 @@ class CourseController extends Controller
         if (!$instructor) {
             return ApiResponse::sendResponse('Instructor not found', []);
         }
+        if ($instructor->course_id != null) {
+            return ApiResponse::sendResponse('Instructor already has course', []);
+        }
 
         // Create new course
         $course = Course::create([
-            'title' => $requset->title,
+            'title' => $request->title,
             'slug' => $slug,
-            'description' => $requset->description,
-            'manager_id' => $requset->user()->id,
+            'description' => $request->description,
+            'manager_id' => $request->user()->id,
             'image' => $newImage,
-            'start_at' => Carbon::parse($requset->start_at),
-            'end_at' => Carbon::parse($requset->end_at),
+            'course_start' => Carbon::parse($request->course_start),
+            'course_end' => Carbon::parse($request->course_end),
+            'apply_start' => Carbon::parse($request->apply_start),
+            'apply_end' => Carbon::parse($request->apply_end),
+            'location' => $request->location,
         ]);
 
         // add instructor to course
@@ -51,16 +57,16 @@ class CourseController extends Controller
         return ApiResponse::sendResponse('Course created successfully', new StoreCourseResource($course));
     }
 
-    public function update(UpdateCourseRequest $requset)
+    public function update(UpdateCourseRequest $request)
     {
-        if (!empty($requset)) {
-            $course = Course::where('slug', $requset->course_slug)->first();
+        if (!empty($request)) {
+            $course = Course::where('slug', $request->course_slug)->first();
             if (!$course) {
                 return ApiResponse::sendResponse('Course not found', []);
             }
-            $instructor = Instructor::where('email', $requset->instructor_email)->first();
-            if ($requset->hasFile('image')) {
-                $image = $requset->image;
+            $instructor = Instructor::where('email', $request->instructor_email)->first();
+            if ($request->hasFile('image')) {
+                $image = $request->image;
                 $extension = $image->getClientOriginalExtension();
                 $path = 'public/images/courses/';
                 $imageName = $path . uuid_create() . '.' . $extension;
@@ -68,13 +74,16 @@ class CourseController extends Controller
             }
             // Create new course
             $course->update([
-                'title' => $requset->title ?? $course->title,
-                'slug' => $requset->course_slug,
-                'description' => $requset->description ?? $course->description,
-                'manager_id' => $requset->user()->id,
-                'image' => $newImage,
-                'start_at' => Carbon::parse($requset->start_at),
-                'end_at' => Carbon::parse($requset->end_at),
+                'title' => $request->title ?? $course->title,
+                'slug' => $request->course_slug,
+                'description' => $request->description ?? $course->description,
+                'manager_id' => $request->user()->id,
+                'image' => $newImage ?? $course->image,
+                'course_start' => Carbon::parse($request->course_start) ?? $course->course_start,
+                'course_end' => Carbon::parse($request->course_end) ?? $course->course_end,
+                'apply_start' => Carbon::parse($request->apply_start) ?? $course->apply_start,
+                'apply_end' => Carbon::parse($request->apply_end) ?? $course->apply_end,
+                'location' => $request->location ?? $course->location,
             ]);
 
             // add instructor to course
@@ -88,7 +97,8 @@ class CourseController extends Controller
         return ApiResponse::sendResponse('No data provided', []);
     }
 
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         $request->validate([
             'course_slug' => 'required|exists:courses,slug'
         ]);
@@ -100,7 +110,8 @@ class CourseController extends Controller
         return ApiResponse::sendResponse('Course found', new StoreCourseResource($course));
     }
 
-    public function delete(Request $request){
+    public function delete(request $request)
+    {
         $request->validate([
             'course_slug' => 'required|exists:courses,slug'
         ]);
@@ -115,7 +126,8 @@ class CourseController extends Controller
         return ApiResponse::sendResponse('Course Deleted Successfuly', []);
     }
 
-    public function restore(Request $request){
+    public function restore(request $request)
+    {
         $request->validate([
             'course_slug' => 'required|exists:courses,slug'
         ]);
@@ -127,5 +139,4 @@ class CourseController extends Controller
         $course->restore();
         return ApiResponse::sendResponse('Course restored successfully', []);
     }
-
 }
