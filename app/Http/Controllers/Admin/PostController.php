@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Helpers\Slug;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\StorePostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -57,16 +58,61 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePostRequest $request)
     {
-        //
+        // fetch post
+        $post = Post::where('slug', $request->post_slug)->first();
+        if (!$post) {
+            return ApiResponse::sendResponse('Post not found', []);
+        }
+
+        // check if request has new image
+        if ($request->hasFile('image')) {
+            $image = $request->image;
+            $extension = $image->getClientOriginalExtension();
+            $path = 'public/images/posts/';
+            $imageName = $path. uuid_create(). '.'. $extension;
+            $newImage = $image->move('images/posts', $imageName);
+        }
+
+        // update post details
+        $post->title = $request->title ?? $post->title;
+        $post->content = $request->content ?? $post->content;
+        $post->image = $newImage ?? $post->image;
+
+        return ApiResponse::sendResponse('Post updated', new StorePostResource($post));
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(string $id)
+    public function delete(Request $request)
     {
-        //
+        $request->validate([
+            'post_slug' => 'required|exists:posts,slug'
+        ]);
+        $input = $request->post_slug;
+        $post = Post::where('slug', $input)->first();
+        if (!$post) {
+            return ApiResponse::sendResponse('Post not found', []);
+        }
+        $post->delete();
+        return ApiResponse::sendResponse('Post Deleted Successfuly', []);
+    }
+
+
+    public function restore(Request $request)
+    {
+        $request->validate([
+            'post_slug' => 'required|exists:posts,slug'
+        ]);
+        $input = $request->post_slug;
+        $post = Post::onlyTrashed('slug', $input)->first();
+        if (!$post) {
+            return ApiResponse::sendResponse('Post not found', []);
+        }
+        $post->restore();
+        return ApiResponse::sendResponse('Post Restored Successfuly', []);
     }
 }
