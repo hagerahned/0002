@@ -19,7 +19,7 @@ class StudentImport implements ToModel, WithGroupedHeadingRow
         return new User([
             'name'     => $row['name'],
             'email'    => $row['email'],
-            'password' => bcrypt($row['password']),
+            'password' => bcrypt('123456789'),
             'gender' => $row['gender'],
             'disability' => $row['disability'],
             'national_id' => $row['national_id'],
