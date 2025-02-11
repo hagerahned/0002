@@ -7,11 +7,14 @@ use App\Helpers\Slug;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
+use App\Http\Resources\RetriveStudentsResource;
 use App\Http\Resources\StoreCourseResource;
 use App\Models\Course;
 use App\Models\Instructor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+use function PHPUnit\Framework\isEmpty;
 
 class CourseController extends Controller
 {
@@ -138,5 +141,22 @@ class CourseController extends Controller
         }
         $course->restore();
         return ApiResponse::sendResponse('Course restored successfully', []);
+    }
+
+    public function getAllEnrollmentStudents(Request $request){
+        $request->validate([
+            'course_slug' => 'required|exists:courses,slug'
+        ]);
+        $input = $request->course_slug;
+        $course = Course::where('slug', $input)->first();
+        $students = $course->students;
+        if (!$course) {
+            return ApiResponse::sendResponse('Course not found', []);
+        }
+        if(isEmpty($students)){
+            return ApiResponse::sendResponse('No Students Enrolled',[]);
+        }
+        return ApiResponse::sendResponse('Student Retrived Successfuly',RetriveStudentsResource::collection($students));
+
     }
 }

@@ -35,6 +35,7 @@ Route::prefix('manager')->middleware(['auth:sanctum','is_manager'])->controller(
         Route::post('/update','update');
         Route::post('/delete','delete');
         Route::post('/restore','restore');
+        Route::get('/getAllEnrollmentStudents','getAllEnrollmentStudents');
     });
 
     Route::prefix('post')->controller(PostController::class)->group(function(){
