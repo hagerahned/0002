@@ -179,7 +179,7 @@ class CourseController extends Controller
             return ApiResponse::sendResponse('Course not found', []);
         }
 
-        // Check if the student is already enrolled
+        // Check if the student is not enrolled
         $student = $course->students()->where('user_id', $user->id)->first();
 
         if (!$student) {

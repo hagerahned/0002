@@ -19,16 +19,8 @@ class Instructor extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'username',
-        'phone',
-        'description',
-        'manager_id',
-        'course_id'
-    ];
+    protected $table = 'instructos';
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
