@@ -36,6 +36,7 @@ Route::prefix('manager')->middleware(['auth:sanctum','is_manager'])->controller(
         Route::post('/delete','delete');
         Route::post('/restore','restore');
         Route::get('/getAllEnrollmentStudents','getAllEnrollmentStudents');
+        Route::post('/acceptStudent','acceptStudent');
     });
 
     Route::prefix('post')->controller(PostController::class)->group(function(){
@@ -57,5 +58,6 @@ Route::prefix('student')->middleware(['auth:sanctum','is_student'])->controller(
 
     Route::prefix('course')->controller(StudentCourseController::class)->group(function(){
         Route::post('enroll','enroll');
+        Route::get('/getAllcourses','getAllcourses');
     });
 });

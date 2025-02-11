@@ -18,6 +18,7 @@ class RetriveStudentsResource extends JsonResource
             'Student Name' => $this->name,
             'Student Email' => $this->email,
             'Student Year' => $this->current_year,
+            'Student Department' => $this->department
         ];
     }
 }

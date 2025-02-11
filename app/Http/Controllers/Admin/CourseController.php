@@ -11,6 +11,7 @@ use App\Http\Resources\RetriveStudentsResource;
 use App\Http\Resources\StoreCourseResource;
 use App\Models\Course;
 use App\Models\Instructor;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -143,7 +144,8 @@ class CourseController extends Controller
         return ApiResponse::sendResponse('Course restored successfully', []);
     }
 
-    public function getAllEnrollmentStudents(Request $request){
+    public function getAllEnrollmentStudents(Request $request)
+    {
         $request->validate([
             'course_slug' => 'required|exists:courses,slug'
         ]);
@@ -153,10 +155,40 @@ class CourseController extends Controller
         if (!$course) {
             return ApiResponse::sendResponse('Course not found', []);
         }
-        if(isEmpty($students)){
-            return ApiResponse::sendResponse('No Students Enrolled',[]);
+        if (!$students) {
+            return ApiResponse::sendResponse('No Students Enrolled', []);
         }
-        return ApiResponse::sendResponse('Student Retrived Successfuly',RetriveStudentsResource::collection($students));
+        return ApiResponse::sendResponse('Student Retrived Successfuly', RetriveStudentsResource::collection($students));
+    }
 
+    public function acceptStudent(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'course_slug' => 'required|exists:courses,slug'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        $course = Course::where('slug', $request->course_slug)->first();
+
+        if (!$user) {
+            return ApiResponse::sendResponse('User not found', []);
+        }
+
+        if (!$course) {
+            return ApiResponse::sendResponse('Course not found', []);
+        }
+
+        // Check if the student is already enrolled
+        $student = $course->students()->where('user_id', $user->id)->first();
+
+        if (!$student) {
+            return ApiResponse::sendResponse('Student not enrolled in the course', []);
+        }
+
+        // Update the pivot status to 'accepted'
+        $course->students()->updateExistingPivot($user->id, ['status' => 'accepted']);
+
+        return ApiResponse::sendResponse('Student status updated to accepted', []);
     }
 }

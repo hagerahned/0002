@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StoreCourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
@@ -35,5 +36,10 @@ class CourseController extends Controller
         
         $course->students()->attach($request->user()->id);
         return ApiResponse::sendResponse('Course enrolled successfully',[]);
+    }
+
+    public function getAllcourses(){
+        $courses = Course::where('apply_end','>',now())->get();
+        return ApiResponse::sendResponse('Course Retrived successfully', StoreCourseResource::collection($courses));
     }
 }
