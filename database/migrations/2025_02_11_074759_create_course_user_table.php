@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('enrollment_date')->default(now());
+            $table->enum('status',['pending','accepted'])->default('pending');
             $table->timestamps();
         });
     }

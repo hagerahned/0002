@@ -24,10 +24,15 @@ class CourseController extends Controller
         if ($course->students()->where('user_id',$request->user()->id)->exists()){
             return ApiResponse::sendResponse('You are already enrolled in this course',[]);
         }
+        // check if the course enrollment not started
+        if($course->apply_start > now()){
+            return ApiResponse::sendResponse('Enrollment period has not started yet',[]);
+        }
         // check if enrollment period has ended
         if($course->apply_end < now()){
             return ApiResponse::sendResponse('Enrollment period has ended',[]);
         }
+        
         $course->students()->attach($request->user()->id);
         return ApiResponse::sendResponse('Course enrolled successfully',[]);
     }
