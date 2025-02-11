@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
+use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +53,8 @@ Route::prefix('instructor')->middleware(['auth:sanctum','is_instructor'])->contr
 Route::prefix('student')->middleware(['auth:sanctum','is_student'])->controller(AuthController::class)->group(function(){
     Route::post('login','login')->withoutMiddleware(['auth:sanctum','is_student']);
     Route::post('logout','logout');
+
+    Route::prefix('course')->controller(StudentCourseController::class)->group(function(){
+        Route::post('enroll','enroll');
+    });
 });
