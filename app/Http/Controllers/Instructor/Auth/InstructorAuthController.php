@@ -18,16 +18,16 @@ class InstructorAuthController extends Controller
 
             $user->token = $user->createToken('instructor', ['instructor'])->plainTextToken;
 
-            return ApiResponse::sendResponse('Login successful', new InstructorLoginResource($user));
+            return ApiResponse::sendResponse('Login successful', new InstructorLoginResource($user), true);
         }
 
         // Authentication failed
-        return ApiResponse::sendResponse('Invalid credentials', []);
+        return ApiResponse::sendResponse('Invalid credentials', [], false);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return ApiResponse::sendResponse('Logged out successfully', []);
+        return ApiResponse::sendResponse('Logged out successfully', [], true);
     }
 }

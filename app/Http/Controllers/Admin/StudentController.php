@@ -18,9 +18,9 @@ class StudentController extends Controller
             ]);
             $file = $request->file('file');
             Excel::import(new StudentImport, $file);
-            return ApiResponse::sendResponse('Students imported successfully.', []);
+            return ApiResponse::sendResponse('Students imported successfully.', [],true);
         }
-        return ApiResponse::sendResponse('somthing went wrong with file pleas try again.',[]);
+        return ApiResponse::sendResponse('somthing went wrong with file pleas try again.',[],false);
     }
 
     public function export(){

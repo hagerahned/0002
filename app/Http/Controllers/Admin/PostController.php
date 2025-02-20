@@ -36,7 +36,7 @@ class PostController extends Controller
             'manager_id' => $request->user()->id,
         ]);
 
-        return ApiResponse::sendResponse('Post Created Successfully', new StorePostResource($post));
+        return ApiResponse::sendResponse('Post Created Successfully', new StorePostResource($post),true);
     }
 
     /**
@@ -50,9 +50,9 @@ class PostController extends Controller
         $input = $request->post_slug;
         $post = Post::where('slug', $input)->first();
         if (!$post) {
-            return ApiResponse::sendResponse('Post not found', []);
+            return ApiResponse::sendResponse('Post not found', [],false);
         }
-        return ApiResponse::sendResponse('Post found', new StorePostResource($post));
+        return ApiResponse::sendResponse('Post found', new StorePostResource($post),true);
     }
 
     /**
@@ -63,7 +63,7 @@ class PostController extends Controller
         // fetch post
         $post = Post::where('slug', $request->post_slug)->first();
         if (!$post) {
-            return ApiResponse::sendResponse('Post not found', []);
+            return ApiResponse::sendResponse('Post not found', [],false);
         }
 
         // check if request has new image
@@ -80,7 +80,7 @@ class PostController extends Controller
         $post->content = $request->content ?? $post->content;
         $post->image = $newImage ?? $post->image;
 
-        return ApiResponse::sendResponse('Post updated', new StorePostResource($post));
+        return ApiResponse::sendResponse('Post updated', new StorePostResource($post), true);
 
     }
 
@@ -95,10 +95,10 @@ class PostController extends Controller
         $input = $request->post_slug;
         $post = Post::where('slug', $input)->first();
         if (!$post) {
-            return ApiResponse::sendResponse('Post not found', []);
+            return ApiResponse::sendResponse('Post not found', [],false);
         }
         $post->delete();
-        return ApiResponse::sendResponse('Post Deleted Successfuly', []);
+        return ApiResponse::sendResponse('Post Deleted Successfuly', [],true);
     }
 
 
@@ -110,9 +110,9 @@ class PostController extends Controller
         $input = $request->post_slug;
         $post = Post::onlyTrashed('slug', $input)->first();
         if (!$post) {
-            return ApiResponse::sendResponse('Post not found', []);
+            return ApiResponse::sendResponse('Post not found', [], false);
         }
         $post->restore();
-        return ApiResponse::sendResponse('Post Restored Successfuly', []);
+        return ApiResponse::sendResponse('Post Restored Successfuly', [], true);
     }
 }

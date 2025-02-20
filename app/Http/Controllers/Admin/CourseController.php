@@ -33,10 +33,10 @@ class CourseController extends Controller
         $newImage = $image->move('images/courses', $imageName);
 
         if (!$instructor) {
-            return ApiResponse::sendResponse('Instructor not found', []);
+            return ApiResponse::sendResponse('Instructor not found', [],false);
         }
         if ($instructor->course_id != null) {
-            return ApiResponse::sendResponse('Instructor already has course', []);
+            return ApiResponse::sendResponse('Instructor already has course', [],true);
         }
 
         // Create new course
@@ -58,7 +58,7 @@ class CourseController extends Controller
             'course_id' => $course->id
         ]);
 
-        return ApiResponse::sendResponse('Course created successfully', new StoreCourseResource($course));
+        return ApiResponse::sendResponse('Course created successfully', new StoreCourseResource($course),true);
     }
 
     public function update(UpdateCourseRequest $request)
@@ -66,7 +66,7 @@ class CourseController extends Controller
         if (!empty($request)) {
             $course = Course::where('slug', $request->course_slug)->first();
             if (!$course) {
-                return ApiResponse::sendResponse('Course not found', []);
+                return ApiResponse::sendResponse('Course not found', [],false);
             }
             $instructor = Instructor::where('email', $request->instructor_email)->first();
             if ($request->hasFile('image')) {
@@ -95,10 +95,10 @@ class CourseController extends Controller
                 'course_id' => $course->id
             ]);
 
-            return ApiResponse::sendResponse('Course updated successfully', new StoreCourseResource($course));
+            return ApiResponse::sendResponse('Course updated successfully', new StoreCourseResource($course),true);
         }
 
-        return ApiResponse::sendResponse('No data provided', []);
+        return ApiResponse::sendResponse('No data provided', [],false);
     }
 
     public function show(Request $request)
@@ -109,9 +109,9 @@ class CourseController extends Controller
         $input = $request->course_slug;
         $course = Course::where('slug', $input)->first();
         if (!$course) {
-            return ApiResponse::sendResponse('Course not found', []);
+            return ApiResponse::sendResponse('Course not found', [],false);
         }
-        return ApiResponse::sendResponse('Course found', new StoreCourseResource($course));
+        return ApiResponse::sendResponse('Course found', new StoreCourseResource($course),true);
     }
 
     public function delete(request $request)
@@ -122,12 +122,12 @@ class CourseController extends Controller
         $input = $request->course_slug;
         $course = Course::where('slug', $input)->first();
         if (!$course) {
-            return ApiResponse::sendResponse('Course not found', []);
+            return ApiResponse::sendResponse('Course not found', [],false);
         }
         $course->instructor->course_id = null;
         $course->instructor->save();
         $course->delete();
-        return ApiResponse::sendResponse('Course Deleted Successfuly', []);
+        return ApiResponse::sendResponse('Course Deleted Successfuly', [],true);
     }
 
     public function restore(request $request)
@@ -138,10 +138,10 @@ class CourseController extends Controller
         $input = $request->course_slug;
         $course = Course::onlyTrashed()->where('slug', $input)->first();
         if (!$course) {
-            return ApiResponse::sendResponse('Course not found', []);
+            return ApiResponse::sendResponse('Course not found', [],false);
         }
         $course->restore();
-        return ApiResponse::sendResponse('Course restored successfully', []);
+        return ApiResponse::sendResponse('Course restored successfully', [],true);
     }
 
     public function getAllEnrollmentStudents(Request $request)
@@ -153,12 +153,12 @@ class CourseController extends Controller
         $course = Course::where('slug', $input)->first();
         $students = $course->students;
         if (!$course) {
-            return ApiResponse::sendResponse('Course not found', []);
+            return ApiResponse::sendResponse('Course not found', [],false);
         }
         if (!$students) {
-            return ApiResponse::sendResponse('No Students Enrolled', []);
+            return ApiResponse::sendResponse('No Students Enrolled', [],false);
         }
-        return ApiResponse::sendResponse('Student Retrived Successfuly', RetriveStudentsResource::collection($students));
+        return ApiResponse::sendResponse('Student Retrived Successfuly', RetriveStudentsResource::collection($students),true);
     }
 
     public function acceptStudent(Request $request)
@@ -172,23 +172,23 @@ class CourseController extends Controller
         $course = Course::where('slug', $request->course_slug)->first();
 
         if (!$user) {
-            return ApiResponse::sendResponse('User not found', []);
+            return ApiResponse::sendResponse('User not found', [],false);
         }
 
         if (!$course) {
-            return ApiResponse::sendResponse('Course not found', []);
+            return ApiResponse::sendResponse('Course not found', [],false);
         }
 
         // Check if the student is not enrolled
         $student = $course->students()->where('user_id', $user->id)->first();
 
         if (!$student) {
-            return ApiResponse::sendResponse('Student not enrolled in the course', []);
+            return ApiResponse::sendResponse('Student not enrolled in the course', [],false);
         }
 
         // Update the pivot status to 'accepted'
         $course->students()->updateExistingPivot($user->id, ['status' => 'accepted']);
 
-        return ApiResponse::sendResponse('Student status updated to accepted', []);
+        return ApiResponse::sendResponse('Student status updated to accepted', [],true);
     }
 }

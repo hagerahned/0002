@@ -19,18 +19,16 @@ class ManagerAuthController extends Controller
 
             $user->token = $user->createToken('manager', ['manager'])->plainTextToken;
 
-            return ApiResponse::sendResponse('Login successful', new ManagerLoginResource($user));
+            return ApiResponse::sendResponse('Login successful', new ManagerLoginResource($user),true);
         }
 
         // Authentication failed
-        return response()->json([
-            'message' => 'Invalid credentials',
-        ]);
+        return ApiResponse::sendResponse('Invalid credentials',[],false);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return ApiResponse::sendResponse('Logged out successfully', []);
+        return ApiResponse::sendResponse('Logged out successfully', [],true);
     }
 }

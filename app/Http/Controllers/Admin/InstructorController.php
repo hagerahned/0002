@@ -30,7 +30,7 @@ class InstructorController extends Controller
             'description' => $request->description,
             'manager_id' => $request->user()->id,
         ]);
-        return ApiResponse::sendResponse('instructor created successfully', new StoreInstructorResource($instructor));
+        return ApiResponse::sendResponse('instructor created successfully', new StoreInstructorResource($instructor),true);
     }
 
     public function show(Request $request)
@@ -43,9 +43,9 @@ class InstructorController extends Controller
         }
 
         if ($instructor) {
-            return ApiResponse::sendResponse('instructor created successfully', new InstructorResource($instructor));
+            return ApiResponse::sendResponse('instructor created successfully', new InstructorResource($instructor),true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', []);
+            return ApiResponse::sendResponse('instructor not found', [],false);
         }
     }
 
@@ -67,7 +67,7 @@ class InstructorController extends Controller
             'password' => bcrypt($request->password) ?? $instructor->password,
         ]);
 
-        return ApiResponse::sendResponse('instructor updated successfully', new StoreInstructorResource($instructor));
+        return ApiResponse::sendResponse('instructor updated successfully', new StoreInstructorResource($instructor),true);
     }
 
     public function delete(Request $request)
@@ -82,9 +82,9 @@ class InstructorController extends Controller
         if ($instructor) {
             $instructor->tokens()->delete();
             $instructor->delete();
-            return ApiResponse::sendResponse('instructor deleted successfully', []);
+            return ApiResponse::sendResponse('instructor deleted successfully', [],true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', []);
+            return ApiResponse::sendResponse('instructor not found', [],false);
         }
     }
 
@@ -99,9 +99,9 @@ class InstructorController extends Controller
 
         if ($instructor) {
             $instructor->restore();
-            return ApiResponse::sendResponse('instructor restored successfully', []);
+            return ApiResponse::sendResponse('instructor restored successfully', [],true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', []);
+            return ApiResponse::sendResponse('instructor not found', [],false);
         }
     }
 }

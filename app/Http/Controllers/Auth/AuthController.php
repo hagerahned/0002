@@ -16,13 +16,13 @@ class AuthController extends Controller
         if(Auth::attempt($request->only(['email','password']))){
             $user = Auth::user();
             $user->token = $user->createToken('student',['student'])->plainTextToken;
-            return ApiResponse::sendResponse('Login successful', new StudentLoginResource($user));
+            return ApiResponse::sendResponse('Login successful', new StudentLoginResource($user), true);
         }
-        return ApiResponse::sendResponse('Invalid credentials', []);
+        return ApiResponse::sendResponse('Invalid credentials', [], false);
     }
 
     public function logout(Request $request){
         $request->user()->currentAccessToken()->delete();
-        return ApiResponse::sendResponse('Logged out successfully', []);
+        return ApiResponse::sendResponse('Logged out successfully', [], true);
     }
 }
