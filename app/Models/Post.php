@@ -9,9 +9,15 @@ class Post extends Model
 {
     use SoftDeletes;
 
-    protected $fillable=['title','content','image','slug','manager_id'];
+    protected $table = 'posts';
+    protected $guarded = [];
 
     public function manager(){
         return $this->belongsTo(Manager::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

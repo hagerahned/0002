@@ -7,57 +7,63 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
+use App\Http\Controllers\Student\CommentController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('manager')->middleware(['auth:sanctum','is_manager'])->controller(ManagerAuthController::class)->group(function(){
-    Route::post('login','login')->withoutMiddleware(['auth:sanctum','is_manager']);
-    Route::post('logout','logout');
+Route::prefix('manager')->middleware(['auth:sanctum', 'is_manager'])->controller(ManagerAuthController::class)->group(function () {
+    Route::post('login', 'login')->withoutMiddleware(['auth:sanctum', 'is_manager']);
+    Route::post('logout', 'logout');
 
-    Route::prefix('instructor')->controller(InstructorController::class)->group(function(){
-        Route::post('/store','store');
-        Route::post('/show','show');
-        Route::post('/update','update');
-        Route::post('/delete','delete');
-        Route::post('/restore','restore');
+    Route::prefix('instructor')->controller(InstructorController::class)->group(function () {
+        Route::post('/store', 'store');
+        Route::post('/show', 'show');
+        Route::post('/update', 'update');
+        Route::post('/delete', 'delete');
+        Route::post('/restore', 'restore');
     });
 
-    Route::prefix('student')->controller(StudentController::class)->group(function(){
-        Route::post('/import','import');
-        Route::get('/export','export')->withoutMiddleware(['auth:sanctum','is_manager']);
+    Route::prefix('student')->controller(StudentController::class)->group(function () {
+        Route::post('/import', 'import');
+        Route::get('/export', 'export')->withoutMiddleware(['auth:sanctum', 'is_manager']);
     });
 
-    Route::prefix('course')->controller(CourseController::class)->group(function(){
-        Route::post('/store','store');
-        Route::post('/show','show');
-        Route::post('/update','update');
-        Route::post('/delete','delete');
-        Route::post('/restore','restore');
-        Route::get('/getAllEnrollmentStudents','getAllEnrollmentStudents');
-        Route::post('/acceptStudent','acceptStudent');
+    Route::prefix('course')->controller(CourseController::class)->group(function () {
+        Route::post('/store', 'store');
+        Route::post('/show', 'show');
+        Route::post('/update', 'update');
+        Route::post('/delete', 'delete');
+        Route::post('/restore', 'restore');
+        Route::get('/getAllEnrollmentStudents', 'getAllEnrollmentStudents');
+        Route::post('/acceptStudent', 'acceptStudent');
     });
 
-    Route::prefix('post')->controller(PostController::class)->group(function(){
-        Route::post('/store','store');
-        Route::post('/show','show');
-        Route::post('/update','update');
-        Route::post('/delete','delete');
-        Route::post('/restore','restore');
+    Route::prefix('post')->controller(PostController::class)->group(function () {
+        Route::post('/store', 'store');
+        Route::post('/show', 'show');
+        Route::post('/update', 'update');
+        Route::post('/delete', 'delete');
+        Route::post('/restore', 'restore');
     });
 });
-Route::prefix('instructor')->middleware(['auth:sanctum','is_instructor'])->controller(InstructorAuthController::class)->group(function(){
-    Route::post('login','login')->withoutMiddleware(['auth:sanctum','is_instructor']);
-    Route::post('logout','logout');
+Route::prefix('instructor')->middleware(['auth:sanctum', 'is_instructor'])->controller(InstructorAuthController::class)->group(function () {
+    Route::post('login', 'login')->withoutMiddleware(['auth:sanctum', 'is_instructor']);
+    Route::post('logout', 'logout');
 });
 
-Route::prefix('student')->middleware(['auth:sanctum','is_student'])->controller(AuthController::class)->group(function(){
-    Route::post('login','login')->withoutMiddleware(['auth:sanctum','is_student']);
-    Route::post('logout','logout');
+Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->controller(AuthController::class)->group(function () {
+    Route::post('login', 'login')->withoutMiddleware(['auth:sanctum', 'is_student']);
+    Route::post('logout', 'logout');
 
-    Route::prefix('course')->controller(StudentCourseController::class)->group(function(){
-        Route::post('enroll','enroll');
-        Route::get('/getAllcourses','getAllcourses');
+    Route::prefix('course')->controller(StudentCourseController::class)->group(function () {
+        Route::post('enroll', 'enroll');
+        Route::get('/getAllcourses', 'getAllcourses');
+    });
+
+    Route::prefix('comment')->controller(CommentController::class)->group(function(){
+        Route::post('/store', 'store');
+        Route::post('/delete', 'delete');
     });
 });

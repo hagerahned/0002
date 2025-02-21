@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description');
             $table->string('image');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->string('location');
             $table->string('rating')->nullable();
             $table->timestamp('apply_start');
