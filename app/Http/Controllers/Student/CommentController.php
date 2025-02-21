@@ -55,5 +55,28 @@ class CommentController extends Controller
         return ApiResponse::sendResponse('Comment updated successfully', new StoreCommentResource($comment), true);
     }
 
-    
+    public function delete(Request $request){
+        // validate comment
+        $request->validate([
+            'comment_slug' =>'required|exists:comments,slug'
+        ]);
+
+        // fetch comment
+        $comment = Comment::where('slug', $request->comment_slug)->first();
+
+        // check if comment exists
+        if (!$comment) {
+            return ApiResponse::sendResponse('Comment not found', [], false);
+        }
+
+        // check if comment belongs to user
+        if(!$comment->user_id == $request->user()->id){
+            return ApiResponse::sendResponse('You are not authorized to delete this comment', [], false);
+        }
+
+        // delete comment
+        $comment->delete();
+
+        return ApiResponse::sendResponse('Comment deleted successfully', [], true);
+    }
 }
