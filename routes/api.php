@@ -64,6 +64,7 @@ Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->controller
 
     Route::prefix('comment')->controller(CommentController::class)->group(function(){
         Route::post('/store', 'store');
+        Route::post('/update', 'update');
         Route::post('/delete', 'delete');
     });
 });

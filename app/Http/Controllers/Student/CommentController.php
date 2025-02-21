@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Helpers\Slug;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\StoreCommentResource;
 use App\Models\Comment;
 use App\Models\Post;
@@ -31,4 +32,28 @@ class CommentController extends Controller
 
         return ApiResponse::sendResponse("Comment created successfully", new StoreCommentResource($comment), true);
     }
+
+    public function update(UpdateCommentRequest $request){
+        // fetch comment
+        $comment = Comment::where('slug', $request->comment_slug)->first();
+
+        // check if comment exists
+        if (!$comment) {
+            return ApiResponse::sendResponse('Comment not found', [], false);
+        }
+
+        // check if comment belongs to user
+        if(!$comment->user_id == $request->user()->id){
+            return ApiResponse::sendResponse('You are not authorized to update this comment', [], false);
+        }
+
+        // update comment
+        $comment->update([
+            'content' => $request->content
+        ]);
+
+        return ApiResponse::sendResponse('Comment updated successfully', new StoreCommentResource($comment), true);
+    }
+
+    
 }
