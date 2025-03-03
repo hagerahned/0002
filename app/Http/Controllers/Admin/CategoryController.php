@@ -67,4 +67,17 @@ class CategoryController extends Controller
         $category->delete();
         return ApiResponse::sendResponse('Category deleted successfully', [],true);
     }
+
+    public function restore(Request $request){
+        $request->validate([
+            'category_slug' => 'required|exists:categories,slug'
+        ]);
+        $input = $request->category_slug;
+        $category = Category::onlyTrashed()->where('slug', $input)->first();
+        if (!$category) {
+            return ApiResponse::sendResponse('Category not found', [],false);
+        }
+        $category->restore();
+        return ApiResponse::sendResponse('Category restored successfully', [],true);
+    }
 }
