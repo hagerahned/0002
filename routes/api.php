@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Auth\ManagerAuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\InstructorController;
 use App\Http\Controllers\Admin\PostController;
@@ -38,6 +39,14 @@ Route::prefix('manager')->middleware(['auth:sanctum', 'is_manager'])->controller
         Route::post('/restore', 'restore');
         Route::get('/getAllEnrollmentStudents', 'getAllEnrollmentStudents');
         Route::post('/acceptStudent', 'acceptStudent');
+    });
+
+    Route::prefix('category')->controller(CategoryController::class)->group(function (){
+        Route::post('/store', 'store');
+        Route::post('/show', 'show');
+        Route::post('/update', 'update');
+        Route::post('/delete', 'delete');
+        Route::post('/restore', 'restore');
     });
 
     Route::prefix('post')->controller(PostController::class)->group(function () {

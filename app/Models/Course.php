@@ -22,7 +22,7 @@ class Course extends Model
     public function students(){
         return $this->belongsToMany(User::class,'course_user')->withPivot('status')->withTimestamps();
     }
-    public function categories(){
-        return $this->belongsToMany(Category::class);
+    public function category(){
+        return $this->belongsTo(Category::class);
     }
 }

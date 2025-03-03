@@ -10,11 +10,13 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
+
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('name')->unique();
+            $table->foreignId('manager_id')->constrained();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
