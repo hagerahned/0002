@@ -55,4 +55,16 @@ class CategoryController extends Controller
         }
         return ApiResponse::sendResponse('Category found', new StoreCategoryResource($category),true);
     }
+
+    public function delete(Request $request){
+        $request->validate([
+            'category_slug' => 'required|exists:categories,slug'
+        ]);
+        $category = Category::where('slug', $request->category_slug)->first();
+        if (!$category) {
+            return ApiResponse::sendResponse('Category not found', [], false);
+        }
+        $category->delete();
+        return ApiResponse::sendResponse('Category deleted successfully', [],true);
+    }
 }
