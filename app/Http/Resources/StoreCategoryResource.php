@@ -16,7 +16,8 @@ class StoreCategoryResource extends JsonResource
     {
         return [
             'Category' => [
-                'Name' => $this->name
+                'Name' => $this->name,
+                'Slug' => $this->slug,
             ]
         ];
     }
