@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\InstructorController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Instructor\AttendanceController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
 use App\Http\Controllers\Student\CommentController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
@@ -60,6 +61,10 @@ Route::prefix('manager')->middleware(['auth:sanctum', 'is_manager'])->controller
 Route::prefix('instructor')->middleware(['auth:sanctum', 'is_instructor'])->controller(InstructorAuthController::class)->group(function () {
     Route::post('login', 'login')->withoutMiddleware(['auth:sanctum', 'is_instructor']);
     Route::post('logout', 'logout');
+
+    Route::prefix('attendance')->controller(AttendanceController::class)->group(function(){
+        Route::post('/store', 'store');
+    });
 });
 
 Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->controller(AuthController::class)->group(function () {

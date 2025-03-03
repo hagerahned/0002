@@ -12,17 +12,28 @@ class Course extends Model
     protected $table = 'courses';
     protected $guarded = [];
 
-    public function manager(){
+    public function manager()
+    {
         return $this->belongsTo(Manager::class);
     }
-    public function instructor(){
+    public function instructor()
+    {
         return $this->hasOne(Instructor::class);
     }
 
-    public function students(){
-        return $this->belongsToMany(User::class,'course_user')->withPivot('status')->withTimestamps();
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'course_user')->withPivot('status')->withTimestamps();
     }
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
+    }
+
+    public function attendances()
+    {
+        return $this->belongsToMany(User::class, 'attendances')
+            ->withPivot('status', 'created_at')
+            ->withTimestamps();
     }
 }

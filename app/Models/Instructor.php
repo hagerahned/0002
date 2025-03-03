@@ -19,7 +19,7 @@ class Instructor extends Authenticatable
      *
      * @var list<string>
      */
-    protected $table = 'instructos';
+    protected $table = 'instructors';
     protected $guarded = [];
 
     /**

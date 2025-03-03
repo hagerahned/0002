@@ -189,6 +189,6 @@ class CourseController extends Controller
         // Update the pivot status to 'accepted'
         $course->students()->updateExistingPivot($user->id, ['status' => 'accepted']);
 
-        return ApiResponse::sendResponse('Student status updated to accepted', [],true);
+        return ApiResponse::sendResponse('Student accepted in course', [],true);
     }
 }
