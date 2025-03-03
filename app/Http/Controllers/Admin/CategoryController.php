@@ -39,8 +39,20 @@ class CategoryController extends Controller
         // update category
         $category->update([
             'name' => $request->name,
+            'slug' => Slug::makeCourse(new Category(),$request->name),
         ]);
 
         return ApiResponse::sendResponse('Category updated successfully', new StoreCategoryResource($category), true);
+    }
+
+    public function show(Request $request){
+        $request->validate([
+            'category_slug' => 'required|exists:categories,slug'
+        ]);
+        $category = Category::where('slug', $request->category_slug)->first();
+        if (!$category) {
+            return ApiResponse::sendResponse('Category not found', [],false);
+        }
+        return ApiResponse::sendResponse('Category found', new StoreCategoryResource($category),true);
     }
 }
