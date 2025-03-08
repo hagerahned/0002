@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\InstructorController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Instructor\AssignmentController;
 use App\Http\Controllers\Instructor\AttendanceController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
 use App\Http\Controllers\Student\CommentController;
@@ -65,6 +66,10 @@ Route::prefix('instructor')->middleware(['auth:sanctum', 'is_instructor'])->cont
     Route::prefix('attendance')->controller(AttendanceController::class)->group(function(){
         Route::post('/store', 'store');
     });
+    Route::prefix('assignment')->controller(AssignmentController::class)->group(function(){
+        Route::post('/store', 'store');
+    });
+    
 });
 
 Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->controller(AuthController::class)->group(function () {
