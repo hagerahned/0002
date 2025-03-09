@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('content');
             $table->string('slug')->unique();
             $table->string('image');
-            $table->foreignId('manager_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ class Attendance extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->where('role','student');
     }
 
     public function course()
@@ -23,6 +23,6 @@ class Attendance extends Model
     }
     public function instructor()
     {
-        return $this->belongsTo(Instructor::class);
+        return $this->belongsTo(User::class)->where('role','instructor');
     }
 }

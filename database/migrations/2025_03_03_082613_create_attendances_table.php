@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->foreignId('instructor_id')->constrained()->onDelete('cascade');
+            $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['present', 'absent'])->default('absent');
             $table->softDeletes();
             $table->timestamps();

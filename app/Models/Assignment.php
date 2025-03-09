@@ -16,7 +16,7 @@ class Assignment extends Model
         return $this->belongsTo(Course::class);
     }
     public function instructor(){
-        return $this->belongsTo(Instructor::class);
+        return $this->belongsTo(User::class)->where('role','instructor');
     }
     public function files(){
         return $this->hasMany(AssignmentFiles::class);

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('apply_end');
             $table->timestamp('course_start');
             $table->timestamp('course_end');
-            $table->foreignId('manager_id')->constrained('managers');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });

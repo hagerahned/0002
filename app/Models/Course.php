@@ -14,11 +14,11 @@ class Course extends Model
 
     public function manager()
     {
-        return $this->belongsTo(Manager::class);
+        return $this->belongsTo(User::class)->where('role','admin');
     }
     public function instructor()
     {
-        return $this->hasOne(Instructor::class);
+        return $this->hasOne(User::class)->where('role','instructor');
     }
 
     public function students()

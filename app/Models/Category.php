@@ -12,7 +12,7 @@ class Category extends Model
     protected $guarded = [];
 
     public function manager(){
-        return $this->belongsTo(Manager::class);
+        return $this->belongsTo(User::class)->where('role','admin');
     }
 
     public function courses(){

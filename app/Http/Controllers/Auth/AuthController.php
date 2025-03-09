@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StudentLoginRequest;
 use App\Http\Resources\StudentLoginResource;
 use Illuminate\Http\Request;
@@ -11,11 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(StudentLoginRequest $request){
+    public function login(LoginRequest $request){
         
         if(Auth::attempt($request->only(['email','password']))){
             $user = Auth::user();
-            $user->token = $user->createToken('student',['student'])->plainTextToken;
+            $user->token = $user->createToken($user->role,[$user->role])->plainTextToken;
             return ApiResponse::sendResponse('Login successful', new StudentLoginResource($user), true);
         }
         return ApiResponse::sendResponse('Invalid credentials', [], false);

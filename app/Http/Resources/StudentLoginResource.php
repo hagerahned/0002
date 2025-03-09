@@ -18,6 +18,7 @@ class StudentLoginResource extends JsonResource
             'Name' => $this->name,
             'Email' => $this->email,
             'Token' => $this->token,
+            'Role' => $this->role,
         ];
     }
 }
