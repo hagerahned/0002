@@ -28,6 +28,7 @@ class UpdateInstructorRequest extends FormRequest
             'password' => 'nullable|min:8',
             'phone' => 'nullable',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

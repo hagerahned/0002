@@ -23,10 +23,11 @@ class StoreInstructorRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email|unique:instructors,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
-            'phone' => 'required|unique:instructors,phone',
+            'phone' => 'required|unique:users,phone',
             'description' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

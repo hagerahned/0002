@@ -15,12 +15,13 @@ class InstructorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'Name' => $this->name,
-            'Username' => $this->username,
-            'Email' => $this->email,
+            'Name' => $request->name,
+            'Email' => $request->email,
             'Phone' => $this->phone,
-            'Description' => $this->description,
+            'Description' => $request->description,
             'username' => $this->username,
+            'Role' => $this->role,
+            'Image' => $this->image,
         ];
     }
 }

@@ -24,6 +24,11 @@ class FileUploadService
         return $filePaths;
     }
 
+    public function uploadImage($image, string $directory = 'images'){
+        return $image->store($directory, 'public');
+    }
+
+    
     /**
      * Delete files from storage.
      *
@@ -35,6 +40,10 @@ class FileUploadService
         foreach ($filePaths as $file) {
             Storage::disk('public')->delete($file);
         }
+    }
+
+    public function deleteImage($image){
+        Storage::disk('public')->delete($image);
     }
 
     /**

@@ -20,6 +20,8 @@ class StoreInstructorResource extends JsonResource
             'Phone' => $this->phone,
             'Description' => $request->description,
             'username' => $this->username,
+            'Role' => $this->role,
+            'Image' => $this->image,
         ];
     }
 }

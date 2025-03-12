@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 class Slug{
     static function makeUser(Model $model,string $text){
-        $slug = Str::slug($text,'');
+        $slug = Str::slug(strtolower($text), '');
         if($model->withTrashed()->where('username',$slug)->exists()){
             $newSlug = $slug . random_int(0,1000000);
         }

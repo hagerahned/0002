@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Slug;
 use App\Models\Manager;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,8 +18,9 @@ class ManagerSeeder extends Seeder
         User::create([
             'name' => 'Manager',
             'email' => 'manager@gmail.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('123456789'),
             'role' => 'manager',
+            'username' => Slug::makeUser(new User(), 'Manager'),
         ]);
     }
 }

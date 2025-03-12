@@ -13,48 +13,63 @@ use App\Models\Instructor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Helpers\Slug;
+use App\Models\User;
+use App\Service\FileUploadService;
 use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
 {
+    protected $fileUploadService;
+    public function __construct(FileUploadService $fileUploadService)
+    {
+        $this->fileUploadService = $fileUploadService;
+    }
 
     public function store(StoreInstructorRequest $request)
     {
-        $username = Slug::makeUser(new Instructor(), $request->name);
-        $instructor = Instructor::create([
+        $username = Slug::makeUser(new User(), $request->name);
+        // create a new instructor
+        $instructor = User::where('role', 'instructor')->create([
             'name' => $request->name,
             'username' => $username,
             'email' => $request->email,
             'password' =>  bcrypt($request->password),
             'phone' => $request->phone,
-            'description' => $request->description,
             'manager_id' => $request->user()->id,
+            'role' => 'instructor'
         ]);
-        return ApiResponse::sendResponse('instructor created successfully', new StoreInstructorResource($instructor),true);
+
+        // Handle file upload if a file is provided
+        $image = $request->file('image');
+        $path = $this->fileUploadService->uploadImage($image);
+        $instructor->image = $path;
+        $instructor->save();
+
+        return ApiResponse::sendResponse('instructor created successfully', new StoreInstructorResource($instructor), true);
     }
 
     public function show(Request $request)
     {
         $input = $request->username;
         if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
-            $instructor = Instructor::where('email', $input)->first();
+            $instructor = User::where('email', $input)->first();
         } else {
-            $instructor = Instructor::where('username', $input)->first();
+            $instructor = User::where('username', $input)->first();
         }
 
         if ($instructor) {
-            return ApiResponse::sendResponse('instructor created successfully', new InstructorResource($instructor),true);
+            return ApiResponse::sendResponse('instructor created successfully', new InstructorResource($instructor), true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', [],false);
+            return ApiResponse::sendResponse('instructor not found', [], false);
         }
     }
 
     public function update(UpdateInstructorRequest $request)
     {
         if ($request->has('email')) {
-            $instructor = Instructor::where('email', $request->email)->first();
+            $instructor = User::where('email', $request->email)->first();
             if (!$instructor) {
-                $instructor = Instructor::where('username', $request->username)->first();
+                $instructor = User::where('username', $request->username)->first();
             }
         }
 
@@ -67,24 +82,37 @@ class InstructorController extends Controller
             'password' => bcrypt($request->password) ?? $instructor->password,
         ]);
 
-        return ApiResponse::sendResponse('instructor updated successfully', new StoreInstructorResource($instructor),true);
+        if ($request->hasFile('image')) {
+            // delete previous image
+            $this->fileUploadService->deleteImage($instructor->image);
+            $instructor->image = null;
+            $instructor->save();
+            
+            // Handle file upload if a file is provided
+            $image = $request->file('image');
+            $path = $this->fileUploadService->uploadImage($image);
+            $instructor->image = $path;
+            $instructor->save();
+        }
+
+        return ApiResponse::sendResponse('instructor updated successfully', new StoreInstructorResource($instructor), true);
     }
 
     public function delete(Request $request)
     {
         $input = $request->username;
         if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
-            $instructor = Instructor::where('email', $input)->first();
+            $instructor = User::where('email', $input)->first();
         } else {
-            $instructor = Instructor::where('username', $input)->first();
+            $instructor = User::where('username', $input)->first();
         }
 
         if ($instructor) {
             $instructor->tokens()->delete();
             $instructor->delete();
-            return ApiResponse::sendResponse('instructor deleted successfully', [],true);
+            return ApiResponse::sendResponse('instructor deleted successfully', [], true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', [],false);
+            return ApiResponse::sendResponse('instructor not found', [], false);
         }
     }
 
@@ -92,16 +120,16 @@ class InstructorController extends Controller
     {
         $input = $request->username;
         if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
-            $instructor = Instructor::onlyTrashed()->where('email', $input)->first();
+            $instructor = User::onlyTrashed()->where('email', $input)->first();
         } else {
-            $instructor = Instructor::onlyTrashed()->where('username', $input)->first();
+            $instructor = User::onlyTrashed()->where('username', $input)->first();
         }
 
         if ($instructor) {
             $instructor->restore();
-            return ApiResponse::sendResponse('instructor restored successfully', [],true);
+            return ApiResponse::sendResponse('instructor restored successfully', [], true);
         } else {
-            return ApiResponse::sendResponse('instructor not found', [],false);
+            return ApiResponse::sendResponse('instructor not found', [], false);
         }
     }
 }

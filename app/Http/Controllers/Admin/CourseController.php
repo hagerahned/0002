@@ -23,7 +23,7 @@ class CourseController extends Controller
     public function store(StoreCourseRequest $request)
     {
         $slug = Slug::makeCourse(new Course, $request->title);
-        $instructor = Instructor::where('email', $request->instructor_email)->first();
+        $instructor = User::where('role','instructor')->where('email', $request->instructor_email)->first();
 
         // store course image
         $image = $request->image;
@@ -68,7 +68,7 @@ class CourseController extends Controller
             if (!$course) {
                 return ApiResponse::sendResponse('Course not found', [],false);
             }
-            $instructor = Instructor::where('email', $request->instructor_email)->first();
+            $instructor = User::where('role','instructor')->where('email', $request->instructor_email)->first();
             if ($request->hasFile('image')) {
                 $image = $request->image;
                 $extension = $image->getClientOriginalExtension();

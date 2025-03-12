@@ -18,6 +18,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role',['student','instructor','manager']);
+            $table->string('username');
+            $table->string('image')->nullable();
+            // Instructor Section
+            $table->foreignId('course_id')->nullable()->constrained('courses');
+            $table->foreignId('manager_id')->nullable()->constrained('users');
+            $table->text('description')->nullable();
+            // Student Section
             $table->enum('gender',['male','female'])->nullable();
             $table->enum('disability',['yes','no'])->nullable();
             $table->string('national_id')->nullable();
@@ -34,6 +41,7 @@ return new class extends Migration
             $table->enum('is_enrolled',['yes','no'])->default('no')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
