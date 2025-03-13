@@ -12,9 +12,10 @@ class StudentExport implements FromCollection,WithHeadings
      */
     public function collection()
     {
-        return User::select(
+        return User::where('role','student')->select(
             'name',
             'email',
+            'username',
             'gender',
             'disability',
             'national_id',
@@ -36,6 +37,7 @@ class StudentExport implements FromCollection,WithHeadings
         return [
             'name',
             'email',
+            'username',
             'gender',
             'disability',
             'national_id',

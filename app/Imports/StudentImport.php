@@ -19,6 +19,7 @@ class StudentImport implements ToModel, WithGroupedHeadingRow
         return new User([
             'name'     => $row['name'],
             'email'    => $row['email'],
+            'username' => $row['username'],
             'password' => bcrypt('123456789'),
             'gender' => $row['gender'],
             'disability' => $row['disability'],
@@ -33,6 +34,7 @@ class StudentImport implements ToModel, WithGroupedHeadingRow
             'expected_graduation_year' => Carbon::parseFromLocale($row['expected_graduation_year']),
             'address' => $row['address'],
             'birth_date' => Carbon::parse($row['birth_date']),
+            'role' => 'student',
         ]);
     }
 }
