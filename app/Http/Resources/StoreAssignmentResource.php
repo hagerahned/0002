@@ -16,11 +16,11 @@ class StoreAssignmentResource extends JsonResource
     {
         return [
             'Assignment' => [
-                'Title' => $this->title,
+                'Title' => $this->name,
                 'Slug' => $this->slug,
                 'Instructor' => new StoreInstructorResource($this->instructor),
                 'Course' => new StoreCourseResource($this->course),
-                'File' => [
+                'Files' => [
                     StoreAssignmentFilesResource::collection($this->files),
                 ],
             ]

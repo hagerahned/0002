@@ -16,7 +16,7 @@ class AttendanceController extends Controller
     public function store(StoreAttendanceRequest $request)
     {
         // fetch student
-        $student = User::where('email', $request->user_email)->first();
+        $student = User::where('role','student')->where('email', $request->user_email)->first();
 
         // fetch course
         $course = Course::whereHas('students', function ($query) use ($student) {

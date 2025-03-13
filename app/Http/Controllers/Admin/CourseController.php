@@ -12,6 +12,7 @@ use App\Http\Resources\StoreCourseResource;
 use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\User;
+use App\Service\FileUploadService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,19 +20,18 @@ use function PHPUnit\Framework\isEmpty;
 
 class CourseController extends Controller
 {
+    protected $fileUploadService;
+    public function __construct(FileUploadService $fileUploadService){
+        $this->fileUploadService = $fileUploadService;
+    }
 
     public function store(StoreCourseRequest $request)
     {
         $slug = Slug::makeCourse(new Course, $request->title);
         $instructor = User::where('role','instructor')->where('email', $request->instructor_email)->first();
-
         // store course image
         $image = $request->image;
-        $extension = $image->getClientOriginalExtension();
-        $path = 'public/images/courses/';
-        $imageName = $path . uuid_create() . '.' . $extension;
-        $newImage = $image->move('images/courses', $imageName);
-
+        $path = $this->fileUploadService->uploadImage($image,'images/courses');
         if (!$instructor) {
             return ApiResponse::sendResponse('Instructor not found', [],false);
         }
@@ -45,7 +45,8 @@ class CourseController extends Controller
             'slug' => $slug,
             'description' => $request->description,
             'manager_id' => $request->user()->id,
-            'image' => $newImage,
+            'instructor_id' => $instructor->id,
+            'image' => $path,
             'course_start' => Carbon::parse($request->course_start),
             'course_end' => Carbon::parse($request->course_end),
             'apply_start' => Carbon::parse($request->apply_start),
@@ -71,10 +72,10 @@ class CourseController extends Controller
             $instructor = User::where('role','instructor')->where('email', $request->instructor_email)->first();
             if ($request->hasFile('image')) {
                 $image = $request->image;
-                $extension = $image->getClientOriginalExtension();
-                $path = 'public/images/courses/';
-                $imageName = $path . uuid_create() . '.' . $extension;
-                $newImage = $image->move('images/courses', $imageName);
+                // delete course previous image
+                $this->fileUploadService->deleteImage($course->image);
+                // store course new image
+                $path = $this->fileUploadService->uploadImage($image,'images/courses');
             }
             // Create new course
             $course->update([
@@ -82,7 +83,8 @@ class CourseController extends Controller
                 'slug' => $request->course_slug,
                 'description' => $request->description ?? $course->description,
                 'manager_id' => $request->user()->id,
-                'image' => $newImage ?? $course->image,
+                'instructor_id' => $instructor->id,
+                'image' => $path ?? $course->image,
                 'course_start' => Carbon::parse($request->course_start) ?? $course->course_start,
                 'course_end' => Carbon::parse($request->course_end) ?? $course->course_end,
                 'apply_start' => Carbon::parse($request->apply_start) ?? $course->apply_start,
@@ -168,7 +170,7 @@ class CourseController extends Controller
             'course_slug' => 'required|exists:courses,slug'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('role','student')->where('email', $request->email)->first();
         $course = Course::where('slug', $request->course_slug)->first();
 
         if (!$user) {
@@ -188,6 +190,9 @@ class CourseController extends Controller
 
         // Update the pivot status to 'accepted'
         $course->students()->updateExistingPivot($user->id, ['status' => 'accepted']);
+        $user->is_enrolled='yes';
+        $user->save();
+
 
         return ApiResponse::sendResponse('Student accepted in course', [],true);
     }

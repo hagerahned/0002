@@ -9,10 +9,15 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\StorePostResource;
 use App\Models\Post;
+use App\Service\FileUploadService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    protected $fileUploadService;
+    public function __construct(FileUploadService $fileUploadService){
+        $this->fileUploadService = $fileUploadService;
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -22,17 +27,14 @@ class PostController extends Controller
 
         // store post image
         $image = $request->image;
-        $extension = $image->getClientOriginalExtension();
-        $path = 'public/images/posts/';
-        $imageName = $path . uuid_create() . '.' . $extension;
-        $newImage = $image->move('images/posts', $imageName);
+        $path = $this->fileUploadService->uploadImage($image,'images/posts');
 
         // create new post
         $post = Post::create([
             'title' => $request->title,
             'slug' => $slug,
             'content' => $request->content,
-            'image' => $newImage,
+            'image' => $path,
             'manager_id' => $request->user()->id,
         ]);
 

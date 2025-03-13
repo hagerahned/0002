@@ -32,7 +32,7 @@ class StoreCourseRequest extends FormRequest
             'apply_start' => 'required|date',
             'apply_end' => 'required|date|after:apply_start',
             
-            'instructor_email' => 'required|exists:instructors,email',
+            'instructor_email' => 'required|exists:users,email',
             'location' => 'required',
         ];
     }

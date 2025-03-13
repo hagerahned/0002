@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Instructor\AssignmentController;
 use App\Http\Controllers\Instructor\AttendanceController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
+use App\Http\Controllers\PostController as ControllersPostController;
 use App\Http\Controllers\Student\CommentController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use Illuminate\Http\Request;
@@ -81,8 +82,8 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('logout', 'logout');
 
         Route::prefix('course')->controller(StudentCourseController::class)->group(function () {
+            Route::get('/getAvailableCourses', 'getAvailableCourses');
             Route::post('enroll', 'enroll');
-            Route::get('/getAllcourses', 'getAllcourses');
         });
 
         Route::prefix('comment')->controller(CommentController::class)->group(function () {
@@ -90,5 +91,9 @@ Route::controller(AuthController::class)->group(function () {
             Route::post('/update', 'update');
             Route::post('/delete', 'delete');
         });
+    });
+
+    Route::prefix('posts')->middleware(['auth:sanctum'])->controller(ControllersPostController::class)->group(function(){
+        Route::get('/','index');
     });
 });

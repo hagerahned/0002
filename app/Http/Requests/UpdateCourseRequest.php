@@ -34,7 +34,7 @@ class UpdateCourseRequest extends FormRequest
             'course_end' => 'nullable|date|after:course_start',
 
             'course_slug' => 'required|exists:courses,slug',
-            'instructor_email' => 'required|exists:instructors,email',
+            'instructor_email' => 'required|exists:users,email',
         ];
     }
 }
