@@ -7,6 +7,7 @@ use App\Helpers\Slug;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\ShowPostResource;
 use App\Http\Resources\StorePostResource;
 use App\Models\Post;
 use App\Service\FileUploadService;
@@ -54,7 +55,7 @@ class PostController extends Controller
         if (!$post) {
             return ApiResponse::sendResponse('Post not found', [],false);
         }
-        return ApiResponse::sendResponse('Post found', new StorePostResource($post),true);
+        return ApiResponse::sendResponse('Post found', new ShowPostResource($post),true);
     }
 
     /**

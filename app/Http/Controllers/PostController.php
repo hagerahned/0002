@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Http\Resources\GetAllPostsResource;
+use App\Http\Resources\ShowPostResource;
 use App\Http\Resources\StorePostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -37,5 +38,17 @@ class PostController extends Controller
             return ApiResponse::sendResponse('Posts Retrieved Successfully', $data, true);
         }
         return ApiResponse::sendResponse('No Posts Found', [], false);
+    }
+
+    public function show(Request $request){
+        $request->validate([
+            'post_slug' =>'required|exists:posts,slug'
+        ]);
+        $input = $request->post_slug;
+        $post = Post::where('slug', $input)->first();
+        if (!$post) {
+            return ApiResponse::sendResponse('Post not found', [], false);
+        }
+        return ApiResponse::sendResponse('Post found', new ShowPostResource($post), true);
     }
 }

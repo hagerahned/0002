@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Student;
+namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\Slug;
@@ -31,6 +31,17 @@ class CommentController extends Controller
         ]);
 
         return ApiResponse::sendResponse("Comment created successfully", new StoreCommentResource($comment), true);
+    }
+
+    public function show(Request $request){
+        $request->validate([
+            'comment_slug' => 'required|exists:comments,slug'
+        ]);
+        $comment = Comment::where('slug', $request->comment_slug)->first();
+        if (!$comment) {
+            return ApiResponse::sendResponse('Comment not found', [], false);
+        }
+        return ApiResponse::sendResponse('Comment found', new StoreCommentResource($comment), true);
     }
 
     public function update(UpdateCommentRequest $request){
