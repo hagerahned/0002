@@ -51,6 +51,15 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
+
+    public function likedPosts()
+    {
+        return $this->hasMany(Like::class)->where('likeable_type', Post::class);
+    }
+
     // User Section
     public function courses()
     {

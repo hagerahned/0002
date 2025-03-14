@@ -11,6 +11,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Instructor\AssignmentController;
 use App\Http\Controllers\Instructor\AttendanceController;
 use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController as ControllersPostController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use Illuminate\Http\Request;
@@ -93,5 +94,9 @@ Route::controller(AuthController::class)->group(function () {
         Route::get('/show', 'show');
         Route::post('/update', 'update');
         Route::post('/delete', 'delete');
+    });
+
+    Route::prefix('like')->middleware(['auth:sanctum'])->controller(LikeController::class)->group(function(){
+        Route::post('/add', 'add');
     });
 });
