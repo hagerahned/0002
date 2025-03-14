@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Helpers\Slug;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -19,7 +20,7 @@ class StudentImport implements ToModel, WithGroupedHeadingRow
         return new User([
             'name'     => $row['name'],
             'email'    => $row['email'],
-            'username' => $row['username'],
+            'username' => Slug::makeUser(new User(), $row['username']),
             'password' => bcrypt('123456789'),
             'gender' => $row['gender'],
             'disability' => $row['disability'],
