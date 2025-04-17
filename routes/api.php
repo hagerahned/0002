@@ -23,6 +23,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('logout', 'logout')->middleware(['auth:sanctum']);
     Route::post('forgetPassword','forgetPassword');
+    Route::post('resetPassword','resetPassword');
 
     Route::prefix('manager')->middleware(['auth:sanctum', 'is_manager'])->group(function () {
         Route::prefix('instructor')->controller(InstructorController::class)->group(function () {
