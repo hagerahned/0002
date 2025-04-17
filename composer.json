@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "guzzlehttp/guzzle": "^7.9",
+        "ichtrojan/laravel-otp": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
