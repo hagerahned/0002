@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens,SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -51,13 +51,19 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function likes(){
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
 
     public function likedPosts()
     {
         return $this->hasMany(Like::class)->where('likeable_type', Post::class);
+    }
+
+    public function interests()
+    {
+        return $this->belongsToMany(Category::class, 'interests')->withTimestamps();
     }
 
     // User Section
@@ -75,23 +81,28 @@ class User extends Authenticatable
     }
 
     // Instructor Section
-    public function manager(){
-        return $this->belongsTo(User::class)->where('role','admin');
+    public function manager()
+    {
+        return $this->belongsTo(User::class)->where('role', 'admin');
     }
-    public function course(){
-        return $this->belongsTo(Course::class)->where('role','instructor');
+    public function course()
+    {
+        return $this->belongsTo(Course::class)->where('role', 'instructor');
     }
 
-    public function assignments(){
-        return $this->hasMany(Assignment::class)->where('role','instructor');
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class)->where('role', 'instructor');
     }
 
     // Manager Section
-    public function instructors(){
-        return $this->hasMany(User::class)->where('role','admin');
+    public function instructors()
+    {
+        return $this->hasMany(User::class)->where('role', 'admin');
     }
 
-    public function posts(){
-        return $this->hasMany(Post::class)->where('role','admin');
+    public function posts()
+    {
+        return $this->hasMany(Post::class)->where('role', 'admin');
     }
 }

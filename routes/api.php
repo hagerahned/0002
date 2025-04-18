@@ -14,6 +14,7 @@ use App\Http\Controllers\Instructor\Auth\InstructorAuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController as ControllersPostController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
+use App\Http\Controllers\Student\StudentController as StudentHomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,8 @@ Route::controller(AuthController::class)->group(function () {
 
     Route::post('login', 'login');
     Route::post('logout', 'logout')->middleware(['auth:sanctum']);
-    Route::post('forgetPassword','forgetPassword');
-    Route::post('resetPassword','resetPassword');
+    Route::post('forgetPassword', 'forgetPassword');
+    Route::post('resetPassword', 'resetPassword');
 
     Route::prefix('manager')->middleware(['auth:sanctum', 'is_manager'])->group(function () {
         Route::prefix('instructor')->controller(InstructorController::class)->group(function () {
@@ -77,13 +78,17 @@ Route::controller(AuthController::class)->group(function () {
         });
     });
 
-    Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->group(function () {
+    Route::prefix('student')->middleware(['auth:sanctum', 'is_student'])->controller(StudentHomeController::class)->group(function () {
         Route::post('login', 'login')->withoutMiddleware(['auth:sanctum', 'is_student']);
         Route::post('logout', 'logout');
 
         Route::prefix('course')->controller(StudentCourseController::class)->group(function () {
             Route::get('/getAvailableCourses', 'getAvailableCourses');
             Route::post('enroll', 'enroll');
+        });
+
+        Route::prefix('interest')->group(function () {
+            Route::post('/store', 'storeInterests');
         });
     });
 
@@ -98,7 +103,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/delete', 'delete');
     });
 
-    Route::prefix('like')->middleware(['auth:sanctum'])->controller(LikeController::class)->group(function(){
+    Route::prefix('like')->middleware(['auth:sanctum'])->controller(LikeController::class)->group(function () {
         Route::post('/add', 'add');
     });
 });

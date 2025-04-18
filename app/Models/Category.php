@@ -11,11 +11,18 @@ class Category extends Model
     protected $table = 'categories';
     protected $guarded = [];
 
-    public function manager(){
-        return $this->belongsTo(User::class)->where('role','admin');
+    public function manager()
+    {
+        return $this->belongsTo(User::class)->where('role', 'admin');
     }
 
-    public function courses(){
+    public function courses()
+    {
         return $this->hasMany(Course::class);
+    }
+
+    public function interestedUsers()
+    {
+        return $this->belongsToMany(User::class, 'interests')->withTimestamps();
     }
 }
