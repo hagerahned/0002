@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Student;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\getCourseStatisticsResource;
 use App\Http\Resources\StoreCourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -27,15 +29,10 @@ class CourseController extends Controller
             return ApiResponse::sendResponse('You are already enrolled in course', [], false);
         }
 
-        // enroll the student in the course
         $course = Course::where('slug', $request->course_slug)->first();
         // check if course exist
         if (!$course) {
             return ApiResponse::sendResponse('course not found', [], false);
-        }
-        // check if student is already enrolled in the course
-        if ($course->students()->where('user_id', $request->user()->id)->exists()) {
-            return ApiResponse::sendResponse('You are already enrolled in this course', [], false);
         }
         // check if the course enrollment not started
         if ($course->apply_start > now()) {
@@ -48,5 +45,24 @@ class CourseController extends Controller
 
         $course->students()->attach($request->user()->id);
         return ApiResponse::sendResponse('Course enrolled successfully', [], true);
+    }
+
+    public function getCourseStatistics(Request $request)
+    {
+        $request->validate([
+            'course_slug' => 'required|exists:courses,slug'
+        ]);
+
+        // check if the user is in course
+        if ($request->user()->is_enrolled == 'no') {
+            return ApiResponse::sendResponse('You are not enrolled in course', [], false);
+        }
+
+        $course = Course::where('slug', $request->course_slug)->first();
+        $user = Auth::user();
+
+        // get student attendance in course
+        $data = $course->attendances->where('id', $user->id);
+        return ApiResponse::sendResponse('Stistics Retrived Successfully.', getCourseStatisticsResource::collection($data), true);
     }
 }

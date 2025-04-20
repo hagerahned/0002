@@ -84,7 +84,8 @@ Route::controller(AuthController::class)->group(function () {
 
         Route::prefix('course')->controller(StudentCourseController::class)->group(function () {
             Route::get('/getAvailableCourses', 'getAvailableCourses');
-            Route::post('enroll', 'enroll');
+            Route::post('/enroll', 'enroll');
+            Route::post('/getCourseStatistics', 'getCourseStatistics');
         });
 
         Route::prefix('interest')->group(function () {
