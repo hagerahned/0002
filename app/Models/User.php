@@ -80,6 +80,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+        public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+
     // Instructor Section
     public function manager()
     {

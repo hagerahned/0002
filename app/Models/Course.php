@@ -37,6 +37,11 @@ class Course extends Model
             ->withTimestamps();
     }
 
+        public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
     public function assignments(){
         return $this->hasMany(Assignment::class);
     }
